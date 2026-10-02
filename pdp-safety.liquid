@@ -1,0 +1,254 @@
+<link rel="stylesheet" href="{{ 'pdp-safety.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-safety.css' | asset_url }}"></noscript>
+
+{%- liquid
+  assign list_items = section.blocks | where: 'type', 'item'
+-%}
+
+<section
+  class="pdp-safety"
+  style="--pdp-safety-bg: {{ section.settings.bg_color }}; --pdp-safety-dark: {{ section.settings.dark_color }}; --pdp-safety-lime: {{ section.settings.lime_color }}; --pdp-safety-text: {{ section.settings.text_color }};"
+  aria-labelledby="pdp-safety-heading-{{ section.id }}"
+>
+  <div class="pdp-safety__grid">
+    <div class="pdp-safety__content">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pdp-safety__heading" id="pdp-safety-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.image != blank -%}
+        <img
+          class="pdp-safety__image pdp-safety__image--mobile"
+          src="{{ section.settings.image | image_url: width: 800 }}"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          alt="{{ section.settings.image.alt | escape }}"
+        >
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <p class="pdp-safety__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      <div class="pdp-safety__cards">
+        <div class="pdp-safety__card pdp-safety__card--light">
+          {%- if section.settings.freefrom_title != blank -%}
+            <h3 class="pdp-safety__card-title">{{ section.settings.freefrom_title }}</h3>
+          {%- endif -%}
+          <ul class="pdp-safety__list" role="list">
+            {%- for block in list_items -%}
+              {%- if block.settings.list == 'free_from' and block.settings.label != blank -%}
+                <li class="pdp-safety__row" {{ block.shopify_attributes }}>
+                  {%- if block.settings.custom_icon != blank -%}
+                    <span class="pdp-safety__icon pdp-safety__icon--image" aria-hidden="true">
+                      <img src="{{ block.settings.custom_icon | image_url: width: 104 }}" width="52" height="52" loading="lazy" decoding="async" fetchpriority="low" alt="">
+                    </span>
+                  {%- else -%}
+                    <span class="pdp-safety__icon" aria-hidden="true">{% render 'pdp-safety-icon', name: block.settings.icon %}</span>
+                  {%- endif -%}
+                  <span class="pdp-safety__mark" aria-hidden="true">{% render 'icon-safety-mark-x' %}</span>
+                  <span class="pdp-safety__label pdp-safety__label--struck">{{ block.settings.label }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        <div class="pdp-safety__card pdp-safety__card--dark">
+          {%- if section.settings.proudly_title != blank -%}
+            <h3 class="pdp-safety__card-title pdp-safety__card-title--lime">{{ section.settings.proudly_title }}</h3>
+          {%- endif -%}
+          <ul class="pdp-safety__list" role="list">
+            {%- for block in list_items -%}
+              {%- if block.settings.list == 'proudly' and block.settings.label != blank -%}
+                <li class="pdp-safety__row" {{ block.shopify_attributes }}>
+                  {%- if block.settings.custom_icon != blank -%}
+                    <span class="pdp-safety__icon pdp-safety__icon--image" aria-hidden="true">
+                      <img src="{{ block.settings.custom_icon | image_url: width: 104 }}" width="52" height="52" loading="lazy" decoding="async" fetchpriority="low" alt="">
+                    </span>
+                  {%- else -%}
+                    <span class="pdp-safety__icon pdp-safety__icon--light" aria-hidden="true">{% render 'pdp-safety-icon', name: block.settings.icon %}</span>
+                  {%- endif -%}
+                  <span class="pdp-safety__mark" aria-hidden="true">{% render 'icon-safety-mark-check' %}</span>
+                  <span class="pdp-safety__label pdp-safety__label--light">{{ block.settings.label }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {%- if section.settings.image != blank -%}
+      <div class="pdp-safety__media" aria-hidden="true">
+        <img
+          class="pdp-safety__image pdp-safety__image--desktop"
+          src="{{ section.settings.image | image_url: width: 1600 }}"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          alt=""
+        >
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.cta_label != blank -%}
+    <div class="pdp-safety__footer page-width">
+      <a class="pdp-safety__cta" href="#MainContent" data-pdp-scroll-to-form>
+        {{ section.settings.cta_label }}
+        {% render 'pdp-icon-lock' %}
+      </a>
+      {%- if section.settings.cta_note != blank -%}
+        <p class="pdp-safety__cta-note">
+          {% render 'pdp-icon-shield' %}
+          {{ section.settings.cta_note }}
+        </p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "PDP Safety",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Safe Home. Clean Conscience."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Paragraph"
+    },
+    {
+      "type": "text",
+      "id": "freefrom_title",
+      "label": "Free-from card title",
+      "default": "We’re Proudly Free From:"
+    },
+    {
+      "type": "text",
+      "id": "proudly_title",
+      "label": "Proudly card title",
+      "default": "And proudly:"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#F4F4F0"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark card background",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "lime_color",
+      "label": "Lime accent",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#24433D"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "List item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "list",
+          "label": "List",
+          "options": [
+            { "value": "free_from", "label": "Free from (white card)" },
+            { "value": "proudly", "label": "And proudly (dark card)" }
+          ],
+          "default": "free_from"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "poison", "label": "Poison" },
+            { "value": "chemicals", "label": "Chemicals" },
+            { "value": "neurotoxins", "label": "Neurotoxins" },
+            { "value": "cruelty", "label": "Animal cruelty" },
+            { "value": "traps", "label": "Traps" },
+            { "value": "synthetic", "label": "Synthetic" },
+            { "value": "rodenticides", "label": "Rodenticides" },
+            { "value": "plant", "label": "Plant" },
+            { "value": "kids", "label": "Kids" },
+            { "value": "pets", "label": "Pets" },
+            { "value": "livestock", "label": "Livestock" },
+            { "value": "biodegradable", "label": "Biodegradable" }
+          ],
+          "default": "poison"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon",
+          "info": "From Files. Overrides the built-in icon and renders without the circle wrapper."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Safety",
+      "blocks": [
+        { "type": "item" },
+        { "type": "item", "settings": { "list": "proudly", "icon": "plant" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,197 @@
+<link rel="stylesheet" href="{{ 'pdp-dosage.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-dosage.css' | asset_url }}"></noscript>
+
+{%- assign cells = section.blocks | where: 'type', 'cell' -%}
+
+<section
+  class="pdp-dosage"
+  style="--pdp-dosage-bg: {{ section.settings.bg_color }}; --pdp-dosage-dark: {{ section.settings.dark_color }}; --pdp-dosage-lime: {{ section.settings.lime_color }}; --pdp-dosage-text: {{ section.settings.text_color }};"
+  aria-labelledby="pdp-dosage-heading-{{ section.id }}"
+>
+  <div class="pdp-dosage__container page-width">
+    <div class="pdp-dosage__panel">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pdp-dosage__heading" id="pdp-dosage-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="pdp-dosage__intro">{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      <div class="pdp-dosage__grid--container">
+        {%- if cells.size > 0 -%}
+          <div class="pdp-dosage__grid">
+            {%- for block in cells -%}
+              <article class="pdp-dosage__cell" {{ block.shopify_attributes }}>
+                {%- if block.settings.title != blank -%}
+                  <h3 class="pdp-dosage__cell-title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                <div class="pdp-dosage__cell-body">
+                  {%- if block.settings.image != blank -%}
+                    <img
+                      class="pdp-dosage__cell-image"
+                      src="{{ block.settings.image | image_url: width: 480 }}"
+                      width="{{ block.settings.image.width }}"
+                      height="{{ block.settings.image.height }}"
+                      loading="lazy"
+                      decoding="async"
+                      fetchpriority="low"
+                      alt="{{ block.settings.image.alt | escape }}"
+                    >
+                  {%- endif -%}
+                  {%- if block.settings.count != blank -%}
+                    <span class="pdp-dosage__count">{{ block.settings.count }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.text != blank -%}
+                    <p class="pdp-dosage__cell-text">{{ block.settings.text }}</p>
+                  {%- endif -%}
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.rec_text != blank -%}
+          <div class="pdp-dosage__rec">
+            {%- if section.settings.rec_label != blank -%}
+              <p class="pdp-dosage__rec-label">{{ section.settings.rec_label }}</p>
+            {%- endif -%}
+            <p class="pdp-dosage__rec-text">{{ section.settings.rec_text }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+
+    {%- if section.settings.cta_label != blank -%}
+      <div class="pdp-dosage__footer">
+        <a class="pdp-dosage__cta" href="#MainContent" data-pdp-scroll-to-form>
+          {{ section.settings.cta_label }}
+          {% render 'pdp-icon-lock' %}
+        </a>
+        {%- if section.settings.cta_note != blank -%}
+          <p class="pdp-dosage__cta-note">
+            {% render 'pdp-icon-shield' %}
+            {{ section.settings.cta_note }}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PDP Dosage",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Directions Of Use"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Intro paragraph"
+    },
+    {
+      "type": "text",
+      "id": "rec_label",
+      "label": "Recommendation label",
+      "default": "OUR RECOMMENDATION"
+    },
+    {
+      "type": "text",
+      "id": "rec_text",
+      "label": "Recommendation text"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#F9F9F4"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark accent",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "lime_color",
+      "label": "Lime accent",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#24433D"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "cell",
+      "name": "Dosage cell",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Small RV or Room"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Illustration"
+        },
+        {
+          "type": "text",
+          "id": "count",
+          "label": "Pouch count",
+          "default": "1 pouch"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Dosage",
+      "blocks": [
+        { "type": "cell" },
+        { "type": "cell" },
+        { "type": "cell" },
+        { "type": "cell" }
+      ]
+    }
+  ]
+}
+{% endschema %}

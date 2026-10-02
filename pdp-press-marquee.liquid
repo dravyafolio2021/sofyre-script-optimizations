@@ -1,0 +1,137 @@
+<link rel="stylesheet" href="{{ 'pdp-press-marquee.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-press-marquee.css' | asset_url }}"></noscript>
+
+{%- assign logo_blocks = section.blocks | where: 'type', 'logo' -%}
+
+{%- if section.settings.text != blank or logo_blocks.size > 0 -%}
+  <section
+    class="pdp-press-marquee"
+    style="--pdp-press-marquee-bg: {{ section.settings.bg_color }}; --pdp-press-marquee-text: {{ section.settings.text_color }}; --pdp-press-marquee-logo-gap: {{ section.settings.logo_gap }}px; --pdp-press-marquee-speed: {{ section.settings.marquee_speed }}s;"
+    aria-label="{{ section.settings.text | strip_html | escape }}"
+  >
+    {%- if section.settings.text != blank -%}
+      <div class="pdp-press-marquee__text--container">
+        <p class="pdp-press-marquee__text">{{ section.settings.text }}</p>
+      </div>
+    {%- endif -%}
+
+    {%- if logo_blocks.size > 0 -%}
+      {%- capture logo_row -%}
+        {%- for block in logo_blocks -%}
+          {%- if block.settings.image != blank -%}
+            <img
+              class="pdp-press-marquee__logo"
+              src="{{ block.settings.image | image_url: width: 150 }}"
+              style="--pdp-press-marquee-logo-h: {{ block.settings.height }}px; --pdp-press-marquee-logo-h-m: {{ block.settings.mobile_height }}px;"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              alt="{{ block.settings.image.alt | escape }}"
+              {{ block.shopify_attributes }}
+            >
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+
+      <div class="pdp-press-marquee__marquee">
+        <div class="pdp-press-marquee__track">
+          <div class="pdp-press-marquee__group">{{ logo_row }}</div>
+          <div class="pdp-press-marquee__group" aria-hidden="true">{{ logo_row }}</div>
+        </div>
+      </div>
+    {%- endif -%}
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PDP Press Marquee",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Making all the BUZZZ as of lately in.."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2D6E62"
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "label": "Gap between logos",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Mobile marquee duration",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo image"
+        },
+        {
+          "type": "range",
+          "id": "height",
+          "label": "Desktop height",
+          "min": 12,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "mobile_height",
+          "label": "Mobile height",
+          "min": 8,
+          "max": 48,
+          "step": 1,
+          "unit": "px",
+          "default": 16
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Press Marquee",
+      "blocks": [
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

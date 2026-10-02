@@ -1,0 +1,18 @@
+<details class="pdp-faq__item" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+  <summary class="pdp-faq__question">
+    <span class="pdp-faq__question-text">{{ block.settings.question }}</span>
+    <span class="pdp-faq__chevron" aria-hidden="true">
+      {%- if section.settings.chevron_icon != blank -%}
+        <img src="{{ section.settings.chevron_icon | image_url: width: 54 }}" width="27" height="27" alt="" loading="lazy" decoding="async" fetchpriority="low">
+      {%- else -%}
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="9" cy="9" r="8.75" fill="#D0F96F" stroke="#243918" stroke-width="0.5"/>
+          <path d="M9.00002 12C8.90702 12 8.81393 11.9593 8.74293 11.8779L5.10657 7.71127C4.96448 7.54846 4.96448 7.28482 5.10657 7.12211C5.24866 6.9594 5.47875 6.9593 5.62075 7.12211L9.00002 10.9942L12.3793 7.12211C12.5214 6.9593 12.7515 6.9593 12.8935 7.12211C13.0355 7.28492 13.0356 7.54856 12.8935 7.71127L9.25711 11.8779C9.18611 11.9593 9.09302 12 9.00002 12Z" fill="#243918"/>
+        </svg>
+      {%- endif -%}
+    </span>
+  </summary>
+  {%- if block.settings.answer != blank -%}
+    <div class="pdp-faq__answer rte">{{ block.settings.answer }}</div>
+  {%- endif -%}
+</details>

@@ -1,0 +1,225 @@
+<link rel="stylesheet" href="{{ 'pdp-comparison.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-comparison.css' | asset_url }}"></noscript>
+
+{%- assign rows = section.blocks | where: 'type', 'row' -%}
+
+<section
+  class="pdp-comparison"
+  style="--pdp-comparison-bg: {{ section.settings.bg_color }}; --pdp-comparison-dark: {{ section.settings.dark_color }}; --pdp-comparison-lime: {{ section.settings.lime_color }}; --pdp-comparison-text: {{ section.settings.text_color }};"
+  aria-labelledby="pdp-comparison-heading-{{ section.id }}"
+>
+  <div class="pdp-comparison__container page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pdp-comparison__heading" id="pdp-comparison-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if rows.size > 0 -%}
+      <table class="pdp-comparison__table">
+        <thead>
+          <tr>
+            <td class="pdp-comparison__benefit-head"></td>
+            <th class="pdp-comparison__us pdp-comparison__us--head" scope="col">
+              {%- if section.settings.us_logo != blank -%}
+                <img
+                  src="{{ section.settings.us_logo | image_url: width: 300 }}"
+                  width="{{ section.settings.us_logo.width }}"
+                  height="{{ section.settings.us_logo.height }}"
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                  alt="{{ shop.name | escape }}"
+                >
+              {%- else -%}
+                {{ shop.name }}
+              {%- endif -%}
+            </th>
+            <th class="pdp-comparison__others pdp-comparison__others--head" scope="col">{{ section.settings.others_label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for block in rows -%}
+            <tr {{ block.shopify_attributes }}>
+              <th class="pdp-comparison__benefit" scope="row">{{ block.settings.benefit }}</th>
+              <td class="pdp-comparison__us{% if forloop.last %} pdp-comparison__us--last{% endif %}">
+                {%- if block.settings.us_value != blank -%}
+                  <span class="pdp-comparison__value">{{ block.settings.us_value }}</span>
+                {%- elsif section.settings.icon_yes != blank -%}
+                  <img
+                    class="pdp-comparison__badge pdp-comparison__badge--check"
+                    src="{{ section.settings.icon_yes | image_url: width: 76 }}"
+                    width="38"
+                    height="38"
+                    loading="lazy"
+                    decoding="async"
+                    fetchpriority="low"
+                    alt="Yes"
+                  >
+                {%- else -%}
+                  <span class="pdp-comparison__badge pdp-comparison__badge--check" role="img" aria-label="Yes">
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 38 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 0.25C29.3617 0.25 37.75 8.42705 37.75 18.5C37.75 28.573 29.3617 36.75 19 36.75C8.63834 36.75 0.25 28.573 0.25 18.5C0.25 8.42705 8.63834 0.25 19 0.25ZM27.8389 11.5293C27.3024 10.5741 26.0779 10.2278 25.1045 10.7461C21.8153 12.4975 19.1141 15.8639 17.3125 18.5498C16.7188 19.4352 16.2024 20.2786 15.7744 21.0156C15.4236 20.698 15.0815 20.4169 14.7695 20.1768C14.2718 19.7937 13.824 19.4907 13.4971 19.2822L13.4922 19.2793L12.9355 18.9424L12.9277 18.9375L12.7441 18.8477C11.8126 18.4455 10.6989 18.7863 10.1797 19.6729C9.62554 20.619 9.96403 21.8181 10.9238 22.3584V22.3594L11.2959 22.5859C11.5431 22.7436 11.8887 22.977 12.2725 23.2725C13.0707 23.8869 13.9162 24.6814 14.4424 25.5381C14.8044 26.1273 15.4507 26.4844 16.1436 26.4941L16.2832 26.4912C17.0279 26.4511 17.6925 26.0121 18.0059 25.3457L18.0049 25.3447L18.1768 24.998C18.2954 24.762 18.4732 24.4156 18.7051 23.9893C19.1698 23.1343 19.8457 21.9651 20.6875 20.71C22.421 18.1257 24.6686 15.4683 27.0352 14.208H27.0361C28.0129 13.6877 28.3773 12.4884 27.8389 11.5293Z" fill="#BCDD71" stroke="black" stroke-width="0.5"/>
+                    </svg>
+                  </span>
+                {%- endif -%}
+              </td>
+              <td class="pdp-comparison__others">
+                {%- if block.settings.others_value != blank -%}
+                  <span class="pdp-comparison__value">{{ block.settings.others_value }}</span>
+                {%- elsif section.settings.icon_no != blank -%}
+                  <img
+                    class="pdp-comparison__badge pdp-comparison__badge--x"
+                    src="{{ section.settings.icon_no | image_url: width: 78 }}"
+                    width="39"
+                    height="39"
+                    loading="lazy"
+                    decoding="async"
+                    fetchpriority="low"
+                    alt="No"
+                  >
+                {%- else -%}
+                  <span class="pdp-comparison__badge pdp-comparison__badge--x" role="img" aria-label="No">
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 38 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 0.25C29.3288 0.25 37.7498 9.02403 37.75 19.832C37.75 30.6402 29.329 39.415 19 39.415C8.67105 39.415 0.25 30.6402 0.25 19.832C0.250232 9.02403 8.67119 0.25 19 0.25Z" fill="#DBDFDC" stroke="#2D2D2D" stroke-width="0.5"/>
+                      <path d="M23.9384 12.7012C24.4591 12.158 25.2955 12.1581 25.8163 12.7012C26.3426 13.2508 26.3425 14.1427 25.8163 14.6924L21.0585 19.6592L20.8925 19.832L21.0585 20.0049L25.8163 24.9707C26.3427 25.5204 26.3427 26.4132 25.8163 26.9629C25.5554 27.2351 25.2151 27.3691 24.8768 27.3691C24.539 27.369 24.1992 27.235 23.9384 26.9629L19.1805 21.9961L18.9999 21.8076L18.8192 21.9961L14.0614 26.9629C13.8005 27.235 13.4608 27.3691 13.1229 27.3691C12.7846 27.3691 12.4444 27.2352 12.1835 26.9629C11.6571 26.4132 11.6571 25.5204 12.1835 24.9707L16.9423 20.0049L17.1073 19.832L16.9423 19.6592L12.1835 14.6924C11.6574 14.1426 11.6572 13.2508 12.1835 12.7012C12.7042 12.158 13.5406 12.1581 14.0614 12.7012L18.8192 17.668L18.9999 17.8564L19.1805 17.668L23.9384 12.7012Z" fill="white" stroke="#2D2D2D" stroke-width="0.5"/>
+                    </svg>
+                  </span>
+                {%- endif -%}
+              </td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    {%- endif -%}
+
+    {%- if section.settings.cta_label != blank -%}
+      <div class="pdp-comparison__footer">
+        <a class="pdp-comparison__cta" href="#MainContent" data-pdp-scroll-to-form>
+          {{ section.settings.cta_label }}
+          {% render 'pdp-icon-lock' %}
+        </a>
+        {%- if section.settings.cta_note != blank -%}
+          <p class="pdp-comparison__cta-note">
+            {% render 'pdp-icon-shield' %}
+            {{ section.settings.cta_note }}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PDP Comparison",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How We Stack Up"
+    },
+    {
+      "type": "image_picker",
+      "id": "us_logo",
+      "label": "Brand logo"
+    },
+    {
+      "type": "text",
+      "id": "others_label",
+      "label": "Competitor column label",
+      "default": "OTHER SOLUTIONS"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_yes",
+      "label": "Checkmark icon",
+      "info": "SVG from Files. Leave empty to use the built-in GP checkmark."
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_no",
+      "label": "X icon",
+      "info": "SVG from Files. Leave empty to use the built-in GP X."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#F9F9F4"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark accent",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "lime_color",
+      "label": "Lime accent",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#24433D"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "benefit",
+          "label": "Benefit",
+          "default": "Works Within 72 Hours"
+        },
+        {
+          "type": "text",
+          "id": "us_value",
+          "label": "Our value (empty = checkmark)"
+        },
+        {
+          "type": "text",
+          "id": "others_value",
+          "label": "Competitor value (empty = X)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Comparison",
+      "blocks": [
+        { "type": "row" },
+        { "type": "row" },
+        { "type": "row" }
+      ]
+    }
+  ]
+}
+{% endschema %}

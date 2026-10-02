@@ -1,0 +1,154 @@
+<link rel="stylesheet" href="{{ 'pdp-proof-belt.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-proof-belt.css' | asset_url }}"></noscript>
+
+{%- assign card_blocks = section.blocks | where: 'type', 'card' -%}
+
+<section
+  class="pdp-proof-belt"
+  style="--pdp-proof-belt-bg: {{ section.settings.bg_color }}; --pdp-proof-belt-text: {{ section.settings.text_color }}; --pdp-proof-belt-card-border: {{ section.settings.card_border_color }}; --pdp-proof-belt-speed: {{ section.settings.marquee_speed }}s;"
+>
+  <header class="pdp-proof-belt__header">
+    {%- if section.settings.stars_image != blank -%}
+      <img
+        class="pdp-proof-belt__stars"
+        src="{{ section.settings.stars_image | image_url: width: 400 }}"
+        width="{{ section.settings.stars_image.width }}"
+        height="{{ section.settings.stars_image.height }}"
+        loading="lazy"
+        decoding="async"
+        fetchpriority="low"
+        alt=""
+      >
+    {%- endif -%}
+    {%- if section.settings.number_text != blank -%}
+      <h2 class="pdp-proof-belt__heading">
+        <span class="pdp-proof-belt__number">{{ section.settings.number_text }}</span>
+        {%- if section.settings.label_desktop != blank -%}
+          <span class="pdp-proof-belt__label-desktop">{{ section.settings.label_desktop }}</span>
+        {%- endif -%}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.label_mobile != blank -%}
+      <p class="pdp-proof-belt__label-mobile">{{ section.settings.label_mobile }}</p>
+    {%- endif -%}
+  </header>
+
+  {%- if card_blocks.size > 0 -%}
+    {%- capture cards -%}
+      {%- for block in card_blocks -%}
+        {%- if block.settings.image != blank -%}
+          <img
+            class="pdp-proof-belt__card"
+            src="{{ block.settings.image | image_url: width: 400 }}"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+            alt="{{ block.settings.image.alt | escape }}"
+            {{ block.shopify_attributes }}
+          >
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    <div class="pdp-proof-belt__belt">
+      <div class="pdp-proof-belt__row pdp-proof-belt__row--one">
+        <div class="pdp-proof-belt__track">
+          <div class="pdp-proof-belt__group">{{ cards }}{{ cards }}{{ cards }}</div>
+          <div class="pdp-proof-belt__group" aria-hidden="true">{{ cards }}{{ cards }}{{ cards }}</div>
+        </div>
+      </div>
+      <div class="pdp-proof-belt__row pdp-proof-belt__row--two" aria-hidden="true">
+        <div class="pdp-proof-belt__track pdp-proof-belt__track--reverse">
+          <div class="pdp-proof-belt__group">{{ cards }}{{ cards }}{{ cards }}</div>
+          <div class="pdp-proof-belt__group">{{ cards }}{{ cards }}{{ cards }}</div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "PDP Proof Belt",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "stars_image",
+      "label": "Stars image"
+    },
+    {
+      "type": "text",
+      "id": "number_text",
+      "label": "Big number",
+      "default": "35,129+"
+    },
+    {
+      "type": "text",
+      "id": "label_desktop",
+      "label": "Label (desktop, inline with number)",
+      "default": "Properties Protected"
+    },
+    {
+      "type": "text",
+      "id": "label_mobile",
+      "label": "Label (mobile, under number)",
+      "default": "Properties Protected."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#F4F4F0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Marquee duration",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "UGC card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Proof Belt",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,176 @@
+<link rel="stylesheet" href="{{ 'pdp-science-cards.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-science-cards.css' | asset_url }}"></noscript>
+
+{%- assign card_blocks = section.blocks | where: 'type', 'card' -%}
+
+<section
+  class="pdp-science-cards"
+  style="--pdp-science-cards-dark: {{ section.settings.bg_color }}; --pdp-science-cards-heading: {{ section.settings.heading_color }};{% if section.settings.bg_image != blank %} --pdp-science-cards-bg-image: url('{{ section.settings.bg_image | image_url: width: 2000 }}'); --pdp-science-cards-bg-image-m: url('{{ section.settings.bg_image | image_url: width: 800 }}');{% endif %}"
+  aria-labelledby="pdp-science-cards-heading-{{ section.id }}"
+>
+  <div class="pdp-science-cards__container page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pdp-science-cards__heading" id="pdp-science-cards-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}
+      <p class="pdp-science-cards__subheading">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    {%- if card_blocks.size > 0 -%}
+      <div class="pdp-science-cards__grid">
+        {%- for block in card_blocks -%}
+          {%- liquid
+            assign mobile_image = block.settings.image_mobile | default: block.settings.image
+          -%}
+          <article
+            class="pdp-science-cards__card"
+            {% if block.settings.image != blank %}style="--pdp-science-cards-card-bg: url('{{ block.settings.image | image_url: width: 1400 }}'); --pdp-science-cards-card-bg-m: url('{{ mobile_image | image_url: width: 800 }}');"{% endif %}
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.label != blank -%}
+              <p class="pdp-science-cards__label">{{ block.settings.label }}</p>
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              <h3 class="pdp-science-cards__title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.chips != blank -%}
+              <ul class="pdp-science-cards__chips" role="list">
+                {%- assign chips = block.settings.chips | split: ',' -%}
+                {%- for chip in chips -%}
+                  <li class="pdp-science-cards__chip">{{ chip | strip }}</li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="pdp-science-cards__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_label != blank -%}
+      <div class="pdp-science-cards__footer">
+        <a class="pdp-science-cards__cta" href="#MainContent" data-pdp-scroll-to-form>
+          {{ section.settings.cta_label }}
+          {% render 'pdp-icon-lock' %}
+        </a>
+        {%- if section.settings.cta_note != blank -%}
+          <p class="pdp-science-cards__cta-note">
+            {% render 'pdp-icon-shield' %}
+            {{ section.settings.cta_note }}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'pdp-science-cards.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "PDP Science Cards",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Science of Nature"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Before Traps. Before Poison. Nature Already Had The Answer."
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Section background image"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background fallback color",
+      "default": "#1E2F24"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#F1F3E9"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Ingredient card",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card background image (desktop)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Card background image (mobile)"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Top label",
+          "default": "40% concentration"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Peppermint Oil"
+        },
+        {
+          "type": "text",
+          "id": "chips",
+          "label": "Chips (comma separated)",
+          "info": "E.g. Nerve-trigger, Scent-Activated, Instinct-Driven"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Science Cards",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

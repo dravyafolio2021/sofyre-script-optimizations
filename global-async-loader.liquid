@@ -59,7 +59,7 @@
       var element = originalCreateElement.apply(document, arguments);
       if (tagName && typeof tagName === 'string' && tagName.toLowerCase() === 'script') {
         element.async = true;
-        
+
         var originalSetAttribute = element.setAttribute.bind(element);
         var handleScriptSrc = function(url) {
           return window.__sofyreAsyncInterceptor(element, url);

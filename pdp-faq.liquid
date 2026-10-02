@@ -1,0 +1,219 @@
+<link rel="stylesheet" href="{{ 'pdp-faq.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-faq.css' | asset_url }}"></noscript>
+
+{%- assign qa_blocks = section.blocks | where: 'type', 'qa' -%}
+
+<section
+  class="pdp-faq"
+  style="--pdp-faq-bg: {{ section.settings.bg_color }}; --pdp-faq-dark: {{ section.settings.dark_color }}; --pdp-faq-lime: {{ section.settings.lime_color }}; --pdp-faq-text: {{ section.settings.text_color }};"
+  aria-labelledby="pdp-faq-heading-{{ section.id }}"
+>
+  <div class="pdp-faq__container page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pdp-faq__heading" id="pdp-faq-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if qa_blocks.size > 0 -%}
+      {%- assign split_at = qa_blocks.size | plus: 1 | divided_by: 2 -%}
+      <div class="pdp-faq__list">
+        <div class="pdp-faq__col">
+          {%- for block in qa_blocks -%}
+            {%- if forloop.index <= split_at and block.settings.question != blank -%}
+              {%- render 'pdp-faq-item', block: block, section: section -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="pdp-faq__col">
+          {%- for block in qa_blocks -%}
+            {%- if forloop.index > split_at and block.settings.question != blank -%}
+              {%- render 'pdp-faq-item', block: block, section: section -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.support_heading != blank -%}
+      <div class="pdp-faq__support">
+        {%- if section.settings.support_avatar != blank -%}
+          <span class="pdp-faq__avatar">
+            <img
+              src="{{ section.settings.support_avatar | image_url: width: 200 }}"
+              width="{{ section.settings.support_avatar.width }}"
+              height="{{ section.settings.support_avatar.height }}"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              alt=""
+            >
+            <span class="pdp-faq__avatar-dot" aria-hidden="true"></span>
+          </span>
+        {%- endif -%}
+        <div class="pdp-faq__support-content">
+          <h3 class="pdp-faq__support-heading">{{ section.settings.support_heading }}</h3>
+          {%- if section.settings.support_text != blank -%}
+            <p class="pdp-faq__support-text">{{ section.settings.support_text }}</p>
+          {%- endif -%}
+          {%- if section.settings.support_button_label != blank and section.settings.support_button_link != blank -%}
+            <a class="pdp-faq__support-btn" href="{{ section.settings.support_button_link }}">
+              {%- if section.settings.support_button_icon != blank -%}
+                <img src="{{ section.settings.support_button_icon | image_url: width: 52 }}" width="26" height="26" alt="" loading="lazy" decoding="async" fetchpriority="low">
+              {%- else -%}
+                <svg aria-hidden="true" focusable="false" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.8779 20.347H4.12215C3.54502 20.3463 2.99171 20.1167 2.58364 19.7086C2.17556 19.3005 1.94604 18.7472 1.94543 18.17V7.20427C1.94604 6.62714 2.17556 6.07381 2.58364 5.66569C2.99171 5.25758 3.54502 5.028 4.12215 5.02734H21.8779C22.455 5.028 23.0083 5.25758 23.4164 5.66569C23.8245 6.07381 24.054 6.62714 24.0546 7.20427V18.17C24.054 18.7472 23.8245 19.3005 23.4164 19.7086C23.0083 20.1167 22.455 20.3463 21.8779 20.347ZM4.12215 5.85934C3.7656 5.85973 3.42375 6.00156 3.17165 6.2537C2.91954 6.50585 2.77776 6.84771 2.77743 7.20427V18.17C2.77776 18.5266 2.91954 18.8685 3.17165 19.1206C3.42375 19.3727 3.7656 19.5146 4.12215 19.515H21.8779C22.2344 19.5146 22.5763 19.3727 22.8284 19.1206C23.0805 18.8685 23.2223 18.5266 23.2226 18.17V7.20427C23.2223 6.84771 23.0805 6.50585 22.8284 6.2537C22.5763 6.00156 22.2344 5.85973 21.8779 5.85934H4.12215Z" fill="white"/>
+                  <path d="M13 15.1346C12.8986 15.1347 12.8006 15.0977 12.7246 15.0306L2.69897 6.18064L3.24955 5.55664L13 14.1645L22.7508 5.55768L23.3014 6.18168L13.2758 15.0317C13.1995 15.0986 13.1014 15.1352 13 15.1346Z" fill="white"/>
+                  <path d="M2.47278 19.04L9.20787 11.3661L9.83354 11.9152L3.09844 19.5892L2.47278 19.04Z" fill="white"/>
+                  <path d="M16.1876 11.9072L16.8133 11.3581L23.5485 19.0322L22.9229 19.5813L16.1876 11.9072Z" fill="white"/>
+                </svg>
+              {%- endif -%}
+              {{ section.settings.support_button_label }}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.support_note != blank -%}
+            <p class="pdp-faq__support-note">{{ section.settings.support_note }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+  (function () {
+
+    document.querySelectorAll('.pdp-faq__col').forEach(function (col) {
+      col.addEventListener('toggle', function (event) {
+        var item = event.target;
+        if (!item.matches('details.pdp-faq__item') || !item.open) return;
+        col.querySelectorAll('details.pdp-faq__item[open]').forEach(function (other) {
+          if (other !== item) other.removeAttribute('open');
+        });
+      }, true);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "PDP FAQ",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "image_picker",
+      "id": "chevron_icon",
+      "label": "Question chevron icon",
+      "info": "SVG from Files. Leave empty to use the built-in GP chevron."
+    },
+    {
+      "type": "header",
+      "content": "Support card"
+    },
+    {
+      "type": "image_picker",
+      "id": "support_button_icon",
+      "label": "Support button icon",
+      "info": "SVG from Files. Leave empty to use the built-in GP mail icon."
+    },
+    {
+      "type": "image_picker",
+      "id": "support_avatar",
+      "label": "Support avatar"
+    },
+    {
+      "type": "text",
+      "id": "support_heading",
+      "label": "Support heading",
+      "default": "Still Need help? Contact us"
+    },
+    {
+      "type": "text",
+      "id": "support_text",
+      "label": "Support text"
+    },
+    {
+      "type": "text",
+      "id": "support_button_label",
+      "label": "Support button label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "support_button_link",
+      "label": "Support button link"
+    },
+    {
+      "type": "text",
+      "id": "support_note",
+      "label": "Support note"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark accent",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "lime_color",
+      "label": "Lime accent",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#24433D"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "qa",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP FAQ",
+      "blocks": [
+        { "type": "qa" },
+        { "type": "qa" },
+        { "type": "qa" }
+      ]
+    }
+  ]
+}
+{% endschema %}

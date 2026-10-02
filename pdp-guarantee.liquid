@@ -1,0 +1,139 @@
+<link rel="stylesheet" href="{{ 'pdp-guarantee.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-guarantee.css' | asset_url }}"></noscript>
+{%- comment -%} GP renders the guarantee copy in Inter (Google Fonts), matching the live page. {%- endcomment -%}
+
+<section
+  class="pdp-guarantee"
+  style="--pdp-guarantee-bg: {{ section.settings.bg_color }}; --pdp-guarantee-card: {{ section.settings.card_color }}; --pdp-guarantee-dark: {{ section.settings.dark_color }}; --pdp-guarantee-lime: {{ section.settings.lime_color }}; --pdp-guarantee-text: {{ section.settings.text_color }};"
+  aria-labelledby="pdp-guarantee-heading-{{ section.id }}"
+>
+  <div class="pdp-guarantee__grid">
+    {%- if section.settings.image != blank -%}
+      <div class="pdp-guarantee__media">
+        <img
+          src="{{ section.settings.image | image_url: width: 1600 }}"
+          srcset="{{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1600 }} 1600w"
+          sizes="(max-width: 767px) 100vw, 50vw"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          alt="{{ section.settings.image.alt | escape }}"
+        >
+      </div>
+    {%- endif -%}
+
+    <div class="pdp-guarantee__card">
+      <span class="pdp-guarantee__badge" aria-hidden="true">
+        {%- if section.settings.badge_icon != blank -%}
+          <img src="{{ section.settings.badge_icon | image_url: width: 116 }}" width="58" height="58" loading="lazy" decoding="async" fetchpriority="low" alt="">
+        {%- else -%}
+          <svg viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M54.3491 22.475C53.3652 21.4652 52.3554 20.4036 51.967 19.4973C51.5786 18.5911 51.6045 17.2446 51.5786 15.8723C51.5527 13.3607 51.5009 10.4866 49.5071 8.49286C47.5134 6.49911 44.6393 6.44732 42.1277 6.42143C40.7554 6.39554 39.3571 6.36964 38.5027 6.03304C37.6482 5.69643 36.5348 4.63482 35.525 3.65089C33.7384 1.94196 31.6929 0 29 0C26.3071 0 24.2616 1.94196 22.475 3.65089C21.4652 4.63482 20.4036 5.64464 19.4973 6.03304C18.5911 6.42143 17.2446 6.39554 15.8723 6.42143C13.3607 6.44732 10.4866 6.49911 8.49286 8.49286C6.49911 10.4866 6.44732 13.3607 6.42143 15.8723C6.39554 17.2446 6.36964 18.6429 6.03304 19.4973C5.69643 20.3518 4.63482 21.4652 3.65089 22.475C1.94196 24.2616 0 26.3071 0 29C0 31.6929 1.94196 33.7384 3.65089 35.525C4.63482 36.5348 5.64464 37.5964 6.03304 38.5027C6.42143 39.4089 6.39554 40.7554 6.42143 42.1277C6.44732 44.6393 6.49911 47.5134 8.49286 49.5071C10.4866 51.5009 13.3607 51.5527 15.8723 51.5786C17.2446 51.6045 18.6429 51.6304 19.4973 51.967C20.3518 52.3036 21.4652 53.3652 22.475 54.3491C24.2616 56.058 26.3071 58 29 58C31.6929 58 33.7384 56.058 35.525 54.3491C36.5348 53.3652 37.5964 52.3554 38.5027 51.967C39.4089 51.5786 40.7554 51.6045 42.1277 51.5786C44.6393 51.5527 47.5134 51.5009 49.5071 49.5071C51.5009 47.5134 51.5527 44.6393 51.5786 42.1277C51.6045 40.7554 51.6304 39.3571 51.967 38.5027C52.3036 37.6482 53.3652 36.5348 54.3491 35.525C56.058 33.7384 58 31.6929 58 29C58 26.3071 56.058 24.2616 54.3491 22.475ZM41.817 24.2875L26.6438 38.7875C26.2515 39.1565 25.7323 39.3605 25.1938 39.3571C24.6631 39.3592 24.1525 39.1549 23.7696 38.7875L16.183 31.5375C15.9726 31.3539 15.8015 31.1297 15.6799 30.8783C15.5584 30.6269 15.4889 30.3535 15.4757 30.0745C15.4625 29.7956 15.5059 29.5168 15.6031 29.2551C15.7004 28.9933 15.8496 28.7539 16.0418 28.5513C16.2339 28.3487 16.465 28.187 16.7213 28.0759C16.9775 27.9649 17.2535 27.9069 17.5328 27.9052C17.812 27.9036 18.0887 27.9585 18.3462 28.0665C18.6038 28.1745 18.8368 28.3335 19.0312 28.5339L25.1938 34.4116L38.9688 21.2839C39.3715 20.9325 39.8945 20.7504 40.4284 20.7757C40.9624 20.801 41.4658 21.0316 41.8336 21.4195C42.2014 21.8073 42.405 22.3223 42.4019 22.8568C42.3988 23.3913 42.1892 23.9039 41.817 24.2875Z" fill="currentColor"/>
+          </svg>
+        {%- endif -%}
+      </span>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pdp-guarantee__heading" id="pdp-guarantee-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="pdp-guarantee__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <a class="pdp-guarantee__cta" href="#MainContent" data-pdp-scroll-to-form>
+          {{ section.settings.cta_label }}
+          {% render 'pdp-icon-lock' %}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.cta_note != blank -%}
+        <p class="pdp-guarantee__cta-note">
+          {% render 'pdp-icon-shield' %}
+          {{ section.settings.cta_note }}
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PDP Guarantee",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_icon",
+      "label": "Badge icon",
+      "info": "SVG from Files. Leave empty to use the built-in GP seal."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "30 Day Money Back Guarantee"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_color",
+      "label": "Card background",
+      "default": "#F3F3EF"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark accent",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "lime_color",
+      "label": "Lime accent",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#24433D"
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Guarantee"
+    }
+  ]
+}
+{% endschema %}

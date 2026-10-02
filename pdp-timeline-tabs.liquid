@@ -1,0 +1,282 @@
+<link rel="stylesheet" href="{{ 'pdp-timeline-tabs.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-timeline-tabs.css' | asset_url }}"></noscript>
+
+{%- liquid
+  assign tab_blocks = section.blocks | where: 'type', 'tab'
+  assign item_blocks = section.blocks | where: 'type', 'item'
+-%}
+
+{%- if tab_blocks.size > 0 -%}
+  <section
+    class="pdp-timeline-tabs"
+    style="--pdp-timeline-tabs-bg: {{ section.settings.bg_color }}; --pdp-timeline-tabs-dark: {{ section.settings.dark_color }}; --pdp-timeline-tabs-lime: {{ section.settings.lime_color }}; --pdp-timeline-tabs-orange: {{ section.settings.orange_color }}; --pdp-timeline-tabs-note: {{ section.settings.note_color }}; --pdp-timeline-tabs-eyebrow-bg: {{ section.settings.eyebrow_bg | default: '#24433D' }};"
+    aria-labelledby="pdp-timeline-tabs-heading-{{ section.id }}"
+  >
+    <div class="pdp-timeline-tabs__container page-width">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pdp-timeline-tabs__heading" id="pdp-timeline-tabs-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      <pdp-timeline-tabs class="pdp-timeline-tabs__layout">
+        {%- if section.settings.image != blank -%}
+          <div class="pdp-timeline-tabs__media">
+            <img
+              src="{{ section.settings.image | image_url: width: 1400 }}"
+              srcset="{{ section.settings.image | image_url: width: 700 }} 700w, {{ section.settings.image | image_url: width: 1400 }} 1400w"
+              sizes="(max-width: 767px) 100vw, 48vw"
+              width="{{ section.settings.image.width }}"
+              height="{{ section.settings.image.height }}"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              alt="{{ section.settings.image.alt | escape }}"
+            >
+          </div>
+        {%- endif -%}
+
+        <div class="pdp-timeline-tabs__content">
+          <div class="pdp-timeline-tabs__tabs" role="tablist" aria-label="{{ section.settings.heading | strip_html | escape }}">
+            {%- for block in tab_blocks -%}
+              {%- if block.settings.label != blank -%}
+                <button
+                  type="button"
+                  class="pdp-timeline-tabs__tab"
+                  id="pdp-timeline-tabs-tab-{{ section.id }}-{{ forloop.index }}"
+                  role="tab"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                  aria-controls="pdp-timeline-tabs-panel-{{ section.id }}-{{ forloop.index }}"
+                  {% unless forloop.first %}tabindex="-1"{% endunless %}
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.label }}
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if section.settings.hint_text != blank -%}
+            <p class="pdp-timeline-tabs__hint">
+              {%- if section.settings.hint_icon != blank -%}
+                <img class="pdp-timeline-tabs__hint-icon" src="{{ section.settings.hint_icon | image_url: width: 48 }}" width="24" height="24" loading="lazy" decoding="async" fetchpriority="low" alt="">
+              {%- endif -%}
+              {{ section.settings.hint_text }}
+            </p>
+          {%- endif -%}
+
+          {%- for tab in tab_blocks -%}
+            {%- assign tab_index = forloop.index -%}
+            <div
+              class="pdp-timeline-tabs__panel"
+              id="pdp-timeline-tabs-panel-{{ section.id }}-{{ tab_index }}"
+              role="tabpanel"
+              aria-labelledby="pdp-timeline-tabs-tab-{{ section.id }}-{{ tab_index }}"
+              {% unless forloop.first %}hidden{% endunless %}
+            >
+              <div class="pdp-timeline-tabs__timeline">
+                <span class="pdp-timeline-tabs__dot" aria-hidden="true"></span>
+                {%- if tab.settings.eyebrow != blank -%}
+                  <span class="pdp-timeline-tabs__eyebrow">{{ tab.settings.eyebrow }}</span>
+                {%- endif -%}
+                {%- if tab.settings.title != blank -%}
+                  <h3 class="pdp-timeline-tabs__title">{{ tab.settings.title }}</h3>
+                {%- endif -%}
+                {%- for item in item_blocks -%}
+                  {%- if item.settings.tab == tab_index -%}
+                    {%- if item.settings.bullet != blank -%}
+                      <p class="pdp-timeline-tabs__bullet" {{ item.shopify_attributes }}>
+                        <span class="pdp-timeline-tabs__check" aria-hidden="true">
+                          {%- if section.settings.check_icon != blank -%}
+                            <img src="{{ section.settings.check_icon | image_url: width: 36 }}" width="18" height="18" loading="lazy" alt="">
+                          {%- else -%}
+                            <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path fill="currentColor" d="M16.136 6.979h0l.003-.004a1.499 1.499 0 00-2.275-1.954l-5.945 6.777-1.858-1.859A1.499 1.499 0 103.94 12.06l2.999 3s0 0 0 0c.289.29.675.44 1.1.439h.019a1.5 1.5 0 001.08-.522l6.998-7.998z"/>
+                            </svg>
+                          {%- endif -%}
+                        </span>
+                        {{ item.settings.bullet }}
+                      </p>
+                    {%- endif -%}
+                    {%- if item.settings.note != blank -%}
+                      <p class="pdp-timeline-tabs__note">{{ item.settings.note }}</p>
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </pdp-timeline-tabs>
+
+      {%- if section.settings.cta_label != blank -%}
+        <div class="pdp-timeline-tabs__footer">
+          <a class="pdp-timeline-tabs__cta" href="#MainContent" data-pdp-timeline-tabs-scroll-to-form>
+            {{ section.settings.cta_label }}
+            {% render 'pdp-icon-lock' %}
+          </a>
+          {%- if section.settings.cta_note != blank -%}
+            <p class="pdp-timeline-tabs__cta-note">
+              {% render 'pdp-icon-shield' %}
+              {{ section.settings.cta_note }}
+            </p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <script src="{{ 'pdp-timeline-tabs.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PDP Timeline Tabs",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Here's Exactly What Happens After You Place A Pouch"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "hint_text",
+      "label": "Hint text",
+      "default": "Tap on each box to view progress by week"
+    },
+    {
+      "type": "image_picker",
+      "id": "hint_icon",
+      "label": "Hint icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "check_icon",
+      "label": "Bullet check icon",
+      "info": "SVG from Files. Leave empty to use the built-in white check."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#F1F3E9"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark accent",
+      "default": "#23372B"
+    },
+    {
+      "type": "color",
+      "id": "lime_color",
+      "label": "Lime accent",
+      "default": "#CCF46F"
+    },
+    {
+      "type": "color",
+      "id": "orange_color",
+      "label": "Bullet color",
+      "default": "#9B4600"
+    },
+    {
+      "type": "color",
+      "id": "note_color",
+      "label": "Note text color",
+      "default": "#4A5C58"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_bg",
+      "label": "Phase chip background",
+      "default": "#24433D"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "default": "HOURS 1–72"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Panel eyebrow",
+          "default": "HOUR 1-72"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Panel title",
+          "default": "Mice Retreat Immediately"
+        }
+      ]
+    },
+    {
+      "type": "item",
+      "name": "Bullet + note",
+      "settings": [
+        {
+          "type": "range",
+          "id": "tab",
+          "label": "Belongs to tab number",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "default": 1
+        },
+        {
+          "type": "text",
+          "id": "bullet",
+          "label": "Bullet text"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note (white chip)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Timeline Tabs",
+      "blocks": [
+        { "type": "tab" },
+        { "type": "item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

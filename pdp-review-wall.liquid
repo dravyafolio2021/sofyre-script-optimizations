@@ -1,0 +1,381 @@
+<link rel="stylesheet" href="{{ 'pdp-review-wall.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pdp-review-wall.css' | asset_url }}"></noscript>
+
+{%- liquid
+  assign tab_blocks = section.blocks | where: 'type', 'tab'
+  assign review_blocks = section.blocks | where: 'type', 'review'
+-%}
+
+{%- if review_blocks.size > 0 -%}
+  <section
+    class="pdp-review-wall section-{{ section.id }}-padding"
+    style="--pdp-review-wall-bg: {{ section.settings.bg_color }}; --pdp-review-wall-text: {{ section.settings.text_color }}; --pdp-review-wall-card-bg: {{ section.settings.card_bg_color }}; --pdp-review-wall-accent: {{ section.settings.accent_color }}; --pdp-review-wall-star: {{ section.settings.star_color }}; --pdp-review-wall-padding-top: {{ section.settings.padding_top }}px; --pdp-review-wall-padding-bottom: {{ section.settings.padding_bottom }}px;"
+    aria-labelledby="pdp-review-wall-heading-{{ section.id }}"
+  >
+    <div class="pdp-review-wall__container page-width">
+      <header class="pdp-review-wall__header">
+        <div class="pdp-review-wall__header--container">
+          {%- if section.settings.rating_image != blank -%}
+            <img
+              class="pdp-review-wall__rating-image"
+              src="{{ section.settings.rating_image | image_url: width: 320 }}"
+              srcset="{{ section.settings.rating_image | image_url: width: 320 }} 1x, {{ section.settings.rating_image | image_url: width: 640 }} 2x"
+              width="{{ section.settings.rating_image.width }}"
+              height="{{ section.settings.rating_image.height }}"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              alt=""
+            >
+          {%- endif -%}
+          {%- if section.settings.rating_label != blank -%}
+            <p class="pdp-review-wall__rating-label">{{ section.settings.rating_label }}</p>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pdp-review-wall__heading" id="pdp-review-wall-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </header>
+
+      <pdp-review-wall class="pdp-review-wall__wall">
+        {%- if tab_blocks.size > 0 -%}
+          <div class="pdp-review-wall__tabs" role="tablist" aria-label="{{ section.settings.tabs_aria_label | default: 'Review categories' }}">
+            {%- for block in tab_blocks -%}
+              {%- if block.settings.label != blank -%}
+                <button
+                  type="button"
+                  class="pdp-review-wall__tab"
+                  id="pdp-review-wall-tab-{{ section.id }}-{{ forloop.index }}"
+                  role="tab"
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                  aria-controls="pdp-review-wall-panel-{{ section.id }}-{{ forloop.index }}"
+                  {% unless forloop.first %}tabindex="-1"{% endunless %}
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.label }}
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.hint_text != blank -%}
+          <p class="pdp-review-wall__hint">
+            {%- if section.settings.hint_icon != blank -%}
+              <img
+                class="pdp-review-wall__hint-icon"
+                src="{{ section.settings.hint_icon | image_url: width: 38 }}"
+                width="19"
+                height="25"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+              >
+            {%- endif -%}
+            {{ section.settings.hint_text }}
+          </p>
+        {%- endif -%}
+
+        {%- if tab_blocks.size > 0 -%}
+          {%- for tab in tab_blocks -%}
+            {%- assign tab_index = forloop.index -%}
+            <div
+              class="pdp-review-wall__panel"
+              id="pdp-review-wall-panel-{{ section.id }}-{{ tab_index }}"
+              role="tabpanel"
+              aria-labelledby="pdp-review-wall-tab-{{ section.id }}-{{ tab_index }}"
+              {% unless forloop.first %}hidden{% endunless %}
+            >
+              <ul class="pdp-review-wall__grid" role="list">
+                {%- for block in review_blocks -%}
+                  {%- if block.settings.segment == tab_index -%}
+                    {%- render 'pdp-review-card', block: block, section_settings: section.settings -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <ul class="pdp-review-wall__grid" role="list">
+            {%- for block in review_blocks -%}
+              {%- render 'pdp-review-card', block: block, section_settings: section.settings -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- comment -%} Mobile-only carousel arrows (GP shows one card per view) {%- endcomment -%}
+        <div class="pdp-review-wall__nav">
+          <button type="button" class="pdp-review-wall__nav-btn" data-pdp-review-wall-prev aria-label="Previous review">
+            <svg viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M7.5 1 1.5 7l6 6M1.5 7h15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="pdp-review-wall__nav-btn" data-pdp-review-wall-next aria-label="Next review">
+            <svg viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M10.5 1l6 6-6 6M16.5 7h-15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </pdp-review-wall>
+
+      {%- if section.settings.cta_label != blank -%}
+        {%- if section.settings.cta_link != blank or section.settings.cta_scroll_to_form -%}
+          <div class="pdp-review-wall__footer">
+            <a
+              class="pdp-review-wall__cta button"
+              {% if section.settings.cta_link != blank %}
+                href="{{ section.settings.cta_link }}"
+              {% else %}
+                href="#MainContent" data-pdp-review-wall-scroll-to-form
+              {% endif %}
+            >
+              <span class="pdp-review-wall__cta-label">{{ section.settings.cta_label }}</span>
+              {% render 'pdp-icon-lock', class: 'pdp-review-wall__cta-lock' %}
+            </a>
+            {%- if section.settings.footer_note != blank -%}
+              <p class="pdp-review-wall__footer-note">
+                {% render 'pdp-icon-shield', class: 'pdp-review-wall__note-shield' %}
+                {{ section.settings.footer_note }}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </section>
+
+  <script src="{{ 'pdp-review-wall.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PDP Review Wall",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Real Results From People Like You"
+    },
+    {
+      "type": "text",
+      "id": "rating_label",
+      "label": "Rating label",
+      "default": "4.8 | 1668 Verified reviews"
+    },
+    {
+      "type": "image_picker",
+      "id": "rating_image",
+      "label": "Rating image (laurel/stars)"
+    },
+    {
+      "type": "image_picker",
+      "id": "stars_image",
+      "label": "Card stars row",
+      "info": "SVG from Files, shown at the top of each review card."
+    },
+    {
+      "type": "image_picker",
+      "id": "verified_icon",
+      "label": "Verified badge icon",
+      "info": "SVG from Files."
+    },
+    {
+      "type": "text",
+      "id": "hint_text",
+      "label": "Hint text",
+      "default": "Tap on each box to read more success stories"
+    },
+    {
+      "type": "image_picker",
+      "id": "hint_icon",
+      "label": "Hint icon",
+      "info": "SVG from Files, shown before the hint text."
+    },
+    {
+      "type": "text",
+      "id": "tabs_aria_label",
+      "label": "Tabs accessibility label",
+      "default": "Review categories"
+    },
+    {
+      "type": "header",
+      "content": "Bottom call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Add to cart"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link",
+      "info": "Leave empty to scroll to the product form instead."
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_scroll_to_form",
+      "label": "Scroll to product form when no link is set",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "footer_note",
+      "label": "Note under CTA",
+      "default": "30-Day Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#24433d"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#f8f8f4"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (active tab, verified badge)",
+      "default": "#23372b"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Stars",
+      "default": "#7fa93f"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "🏠 Homeowners"
+        }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "segment",
+          "label": "Show in tab number",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "default": 1,
+          "info": "Matches the position of the Tab blocks (first tab = 1)."
+        },
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "Customer photo"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_stars",
+          "label": "Show stars",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "verified_label",
+          "label": "Verified label",
+          "default": "Verified Buyer"
+        },
+        {
+          "type": "textarea",
+          "id": "quote_pain",
+          "label": "Problem quote"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "quote_headline",
+          "label": "Result headline"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Full story"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author name"
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Author meta",
+          "info": "E.g. 🏠 Homeowner · Columbus, Ohio"
+        },
+        {
+          "type": "text",
+          "id": "purchased",
+          "label": "Purchase label",
+          "info": "E.g. Purchased: 2 Pack"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Review Wall",
+      "blocks": [
+        { "type": "tab" },
+        { "type": "tab", "settings": { "label": "🚐 RV Owner" } },
+        { "type": "tab", "settings": { "label": "🌾 Farmers" } },
+        { "type": "review" },
+        { "type": "review", "settings": { "segment": 2 } },
+        { "type": "review", "settings": { "segment": 3 } }
+      ]
+    }
+  ]
+}
+{% endschema %}
