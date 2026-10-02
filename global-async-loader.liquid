@@ -1,0 +1,141 @@
+<script>
+  (function() {
+    var deferredScriptsQueue = [];
+    var hasInteracted = false;
+    var interactionEvents = ['scroll', 'touchstart', 'mousemove', 'keydown', 'click'];
+
+    function isTrackerUrl(url) {
+      if (typeof url !== 'string') return false;
+      var lower = url.toLowerCase();
+      return (
+        lower.indexOf('clarity.js') !== -1 ||
+        lower.indexOf('clarity.ms') !== -1 ||
+        lower.indexOf('fbevents.js') !== -1 ||
+        lower.indexOf('connect.facebook.net') !== -1 ||
+        lower.indexOf('googletagmanager') !== -1 ||
+        lower.indexOf('google-analytics') !== -1 ||
+        lower.indexOf('gtag/js') !== -1 ||
+        lower.indexOf('bat.bing') !== -1 ||
+        lower.indexOf('analytics.tiktok') !== -1 ||
+        lower.indexOf('tiktok.com/i18n/pixel') !== -1 ||
+        lower.indexOf('snap.licdn') !== -1 ||
+        lower.indexOf('sc-static.net') !== -1 ||
+        lower.indexOf('pinterest') !== -1 ||
+        lower.indexOf('pintrk') !== -1 ||
+        lower.indexOf('static.criteo.net') !== -1 ||
+        lower.indexOf('j.northbeam.io') !== -1 ||
+        lower.indexOf('klaviyo') !== -1 ||
+        lower.indexOf('triplewhale') !== -1 ||
+        lower.indexOf('elevar') !== -1 ||
+        lower.indexOf('gp-countdown') !== -1 ||
+        lower.indexOf('sealsubscriptions') !== -1 ||
+        lower.indexOf('booster_currency') !== -1 ||
+        lower.indexOf('insurance-widget-prod') !== -1 ||
+        lower.indexOf('ins-theme-app') !== -1 ||
+        lower.indexOf('cs.gandalf.ee') !== -1 ||
+        lower.indexOf('churnbuster') !== -1 ||
+        lower.indexOf('zigpoll') !== -1 ||
+        lower.indexOf('applovin') !== -1 ||
+        lower.indexOf('jsdeliver.cloud') !== -1 ||
+        lower.indexOf('shopify-perf-kit') !== -1
+      );
+    }
+
+    window.__sofyreAsyncInterceptor = function(element, url) {
+      if (isTrackerUrl(url)) {
+        element.async = true;
+        element.fetchPriority = 'low';
+        if (!hasInteracted) {
+          element.dataset.sofyreDeferredSrc = url;
+          deferredScriptsQueue.push(element);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    var originalCreateElement = document.createElement;
+    document.createElement = function(tagName) {
+      var element = originalCreateElement.apply(document, arguments);
+      if (tagName && typeof tagName === 'string' && tagName.toLowerCase() === 'script') {
+        element.async = true;
+        
+        var originalSetAttribute = element.setAttribute.bind(element);
+        var handleScriptSrc = function(url) {
+          return window.__sofyreAsyncInterceptor(element, url);
+        };
+
+        element.setAttribute = function(name, val) {
+          if (name === 'src' && handleScriptSrc(val)) {
+            return originalSetAttribute('data-src', val);
+          }
+          return originalSetAttribute(name, val);
+        };
+
+        try {
+          var srcDescriptor = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, 'src');
+          if (srcDescriptor && srcDescriptor.set) {
+            Object.defineProperty(element, 'src', {
+              get: function() { return element.dataset.sofyreDeferredSrc || srcDescriptor.get.call(this); },
+              set: function(val) {
+                if (handleScriptSrc(val)) {
+                  element.dataset.sofyreDeferredSrc = val;
+                } else {
+                  srcDescriptor.set.call(this, val);
+                }
+              },
+              configurable: true
+            });
+          }
+        } catch(e) {}
+      }
+      return element;
+    };
+
+    function triggerDeferredScripts() {
+      if (hasInteracted) return;
+      hasInteracted = true;
+
+      interactionEvents.forEach(function(evt) {
+        window.removeEventListener(evt, triggerDeferredScripts, { passive: true });
+      });
+
+      function loadNextScript() {
+        if (deferredScriptsQueue.length === 0) {
+          window.dispatchEvent(new CustomEvent('sofyre:deferred_load'));
+          return;
+        }
+        var el = deferredScriptsQueue.shift();
+        if (el && el.dataset && el.dataset.sofyreDeferredSrc) {
+          var realSrc = el.dataset.sofyreDeferredSrc;
+          delete el.dataset.sofyreDeferredSrc;
+          var freshScript = originalCreateElement.call(document, 'script');
+          freshScript.async = true;
+          freshScript.src = realSrc;
+          (document.head || document.documentElement).appendChild(freshScript);
+        }
+        if (window.requestIdleCallback) {
+          requestIdleCallback(function() {
+            setTimeout(loadNextScript, 120);
+          }, { timeout: 400 });
+        } else {
+          setTimeout(loadNextScript, 120);
+        }
+      }
+
+      loadNextScript();
+    }
+
+    interactionEvents.forEach(function(evt) {
+      window.addEventListener(evt, triggerDeferredScripts, { passive: true, once: true });
+    });
+
+    if (window.requestIdleCallback) {
+      requestIdleCallback(function() {
+        setTimeout(triggerDeferredScripts, 6000);
+      }, { timeout: 8000 });
+    } else {
+      setTimeout(triggerDeferredScripts, 6000);
+    }
+  })();
+</script>

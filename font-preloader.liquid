@@ -1,0 +1,70 @@
+{%- liquid
+  assign body_font = settings.type_body_font
+  assign header_font = settings.type_header_font
+  assign has_custom_body = false
+  assign has_custom_header = false
+  if settings.custom_body_font_link != blank
+    assign has_custom_body = true
+  endif
+  if settings.custom_header_font_link != blank
+    assign has_custom_header = true
+  endif
+-%}
+
+{%- unless has_custom_body -%}
+  {%- unless body_font.system? -%}
+    <link rel="preload" as="font" href="{{ body_font | font_url }}" type="font/woff2" crossorigin>
+  {%- endunless -%}
+{%- else -%}
+  <link rel="preload" as="font" href="{{ settings.custom_body_font_link }}" type="font/woff2" crossorigin>
+{%- endunless -%}
+
+{%- unless has_custom_header -%}
+  {%- unless header_font.system? -%}
+    {%- unless header_font.family == body_font.family and header_font.style == body_font.style and header_font.weight == body_font.weight -%}
+      <link rel="preload" as="font" href="{{ header_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+  {%- endunless -%}
+{%- else -%}
+  <link rel="preload" as="font" href="{{ settings.custom_header_font_link }}" type="font/woff2" crossorigin>
+{%- endunless -%}
+
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,700&family=Jost:ital,wght@0,100..900;1,100..900&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+  media="print"
+  onload="this.media='all'"
+>
+<noscript>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,700&family=Jost:ital,wght@0,100..900;1,100..900&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+  >
+</noscript>
+
+<style>
+  @font-face {
+    font-family: 'body-fallback';
+    src: local('Arial');
+    {%- unless has_custom_body -%}
+      size-adjust: {{ body_font.weight | divided_by: 4 | plus: 95 }}%;
+    {%- else -%}
+      size-adjust: 100%;
+    {%- endunless -%}
+    ascent-override: 90%;
+    descent-override: 22%;
+    line-gap-override: 0%;
+  }
+  @font-face {
+    font-family: 'heading-fallback';
+    src: local('Arial');
+    {%- unless has_custom_header -%}
+      size-adjust: {{ header_font.weight | divided_by: 6 | plus: 94 }}%;
+    {%- else -%}
+      size-adjust: 100%;
+    {%- endunless -%}
+    ascent-override: 90%;
+    descent-override: 22%;
+    line-gap-override: 0%;
+  }
+</style>

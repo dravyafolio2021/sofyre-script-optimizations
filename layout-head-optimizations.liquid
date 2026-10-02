@@ -1,0 +1,67 @@
+{% render 'global-async-loader' %}
+{% render 'font-preloader' %}
+
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link rel="preconnect" href="https://js.shrinetheme.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://assets.gemcommerce.com" crossorigin>
+<link rel="dns-prefetch" href="https://j.northbeam.io">
+<link rel="dns-prefetch" href="https://bat.bing.com">
+<link rel="dns-prefetch" href="https://www.clarity.ms">
+
+{%- if template.name == 'product' -%}
+  {%- assign lcp_media = product.selected_or_first_available_variant.featured_media | default: product.featured_image -%}
+  {%- if lcp_media -%}
+    <link rel="preload" as="image" href="{{ lcp_media | image_url: width: 800 }}" fetchpriority="high" imagesrcset="{%- if lcp_media.width >= 360 -%}{{ lcp_media | image_url: width: 360 }} 360w,{%- endif -%}{%- if lcp_media.width >= 533 -%}{{ lcp_media | image_url: width: 533 }} 533w,{%- endif -%}{%- if lcp_media.width >= 720 -%}{{ lcp_media | image_url: width: 720 }} 720w,{%- endif -%}{%- if lcp_media.width >= 900 -%}{{ lcp_media | image_url: width: 900 }} 900w,{%- endif -%}{{ lcp_media | image_url: width: 1200 }} 1200w" imagesizes="(min-width: 990px) 50vw, 100vw">
+  {%- endif -%}
+{%- endif -%}
+
+<script>
+  if (window.requestIdleCallback) {
+    requestIdleCallback(function() {
+      (function(w, d, t, u, o) {w[u] = w[u] || [], o.ts = (new Date).getTime();var n = d.createElement(t);n.src = "https://bat.bing.net/bat.js?ti=" + o.ti + ("uetq" != u ? "&q=" + u : ""),n.async = 1, n.onload = n.onreadystatechange = function() {var s = this.readyState;s && "loaded" !== s && "complete" !== s ||(o.q = w[u], w[u] = new UET(o), w[u].push("pageLoad"),n.onload = n.onreadystatechange = null)};var i = d.getElementsByTagName(t)[0];i.parentNode.insertBefore(n, i);})(window, document, "script", "uetq", {ti: "97246968",enableAutoSpaTracking: true});
+    });
+  } else {
+    setTimeout(function() {
+      (function(w, d, t, u, o) {w[u] = w[u] || [], o.ts = (new Date).getTime();var n = d.createElement(t);n.src = "https://bat.bing.net/bat.js?ti=" + o.ti + ("uetq" != u ? "&q=" + u : ""),n.async = 1, n.onload = n.onreadystatechange = function() {var s = this.readyState;s && "loaded" !== s && "complete" !== s ||(o.q = w[u], w[u] = new UET(o), w[u].push("pageLoad"),n.onload = n.onreadystatechange = null)};var i = d.getElementsByTagName(t)[0];i.parentNode.insertBefore(n, i);})(window, document, "script", "uetq", {ti: "97246968",enableAutoSpaTracking: true});
+    }, 3000);
+  }
+</script>
+
+<script>
+  if (window.requestIdleCallback) {
+    requestIdleCallback(function() {
+      localStorage.setItem('nb__region_code', "{{ localization.country.iso_code }}");
+      localStorage.setItem('nb__currency_code', "{{ localization.country.currency.iso_code }}");
+    });
+  } else {
+    setTimeout(function() {
+      localStorage.setItem('nb__region_code', "{{ localization.country.iso_code }}");
+      localStorage.setItem('nb__currency_code', "{{ localization.country.currency.iso_code }}");
+    }, 3000);
+  }
+</script>
+
+{%- if template.name == 'customers/account' or request.path contains 'loop' -%}
+<script type="text/javascript">
+  document.addEventListener('sealsubs_portal:loaded', function (e) {
+    ChurnBuster = window.ChurnBuster || {};
+    ChurnBuster.cancelAttributes = {
+      accountId: 'e365eade-f214-40d6-8c9a-d2b4637c2e95',
+      source: 'seal',
+      customerId: window.sealsubscriptions.subscription.customer_id,
+      customerEmail: document.querySelector('.seal-email-address input[name="email"]').value,
+      subscriptionId: window.sealsubscriptions.subscription.id,
+      cancelButtonSelector: 'div#seal-unsubscribe-button',
+    };
+
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = 'https://proxy-assets.churnbuster.io/v4/scripts.js?v=1678742553659';
+    var insert = document.getElementsByTagName('script')[0];
+    insert.parentNode.insertBefore(script, insert);
+  });
+</script>
+{%- endif -%}
